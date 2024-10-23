@@ -20,6 +20,10 @@
   - ready
   - story
   - game
+
+## Let us start now!
+
+![img](img/illust_120487975_20241008_115241.png)
 ---
 
 >以上内容仅用作测试，不代表作者观点。
