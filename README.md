@@ -38,6 +38,6 @@ Here’s a summary in a similar structure:
 ![img](img/illust_120487975_20241008_115241.png)
 ---
 
->以上内容仅用作测试，不代表作者观点。
+>以上内容是虚构的，不代表反映任何事实。
 
->The above content is only for testing purposes and does not represent the author's views.
+>The above content is fictional and does not reflect any facts.
