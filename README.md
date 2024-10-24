@@ -1,25 +1,37 @@
 ## Welcome!
 
- The Grand Canal, the world’s longest artificial waterway, unfolds in a majestic sweep from the imperial grandeur of Beijing in the north to the serene beauty of Hangzhou in the south, an enduring testament to the ingenuity and ambition of ancient Chinese civilization. 
+ What do you hope WentUrc to be—an idea, a person, an organization, a world, or something else?
+
+ Hmph, since you're asking, I won't just explain it so easily! WentUrc, of course, is a profound concept. It could be a philosophical system, maybe a set of values that guides an entire society, or perhaps even an organization far more complex than you can imagine. 
  
- As one of the most extraordinary engineering achievements ever conceived, it was born in the 4th century BCE, yet its true magnificence was only fully realized with its completion in the twilight of the 13th century. 
- 
- Initially forged for the singular purpose of ensuring the flow of grain to the capital, the canal soon became a vital artery through which the lifeblood of commerce pulsed, carrying not only goods of every kind but also ideas, innovations, and cultural treasures.
- 
- Along its meandering path, towns blossomed into thriving centers of trade and industry, becoming the heartbeats of a dynamic and prosperous China. 
- 
- For countless generations, the Grand Canal has been far more than a mere waterway—it has been the bridge that unites north and south, fostering a vibrant exchange of people, goods, and culture, and weaving together the rich tapestry of Chinese history and economic vitality.
+ In short, WentUrc isn't something easily defined. It can represent personal ambition, but it can also symbolize a force that transcends the individual.
+
+ Under the influence of WentUrc, people must uphold their personal honor while always being accountable to the collective.
+
+ Sounds difficult, doesn't it? That's the beauty of it. No one can reach the pinnacle alone, but if you only focus on others, you're wasting your own potential. 
+
+ The real power of WentUrc lies in harmonizing everyone without sacrificing individual growth. Want to know more? Hmph, think it over yourself; I’m not going to tell you everything!
 
 [WentUrc](https://wenturc.com/)
 ---
-- function
-  - useful
-  - outgoing
-  - nana
-- color
-  - ready
-  - story
-  - game
+
+Here’s a summary in a similar structure:
+
+- **Concept**
+  - profound
+  - complex
+  - flexible
+- **Values**
+  - personal honor
+  - collective responsibility
+  - harmony between individual and society
+- **Challenge**
+  - balance autonomy with community
+  - grow without sacrificing self
+- **Essence**
+  - deeper than it seems
+  - requires reflection and understanding
+
 
 ## Let us start now!
 
