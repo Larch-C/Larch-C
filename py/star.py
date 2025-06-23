@@ -12,6 +12,7 @@ import argparse
 import os
 import signal
 import sys
+import time
 from datetime import datetime
 from typing import Set, Dict, List, Optional
 import logging
@@ -256,11 +257,21 @@ class GitHubStarMonitor:
                     if 'rate limit' in response_text.lower():
                         reset_time = response.headers.get('X-RateLimit-Reset')
                         if reset_time:
-                            wait_time = int(reset_time) - int(asyncio.get_event_loop().time())
-                            self.logger.warning(f"API限制已达到，等待 {wait_time} 秒后重试")
+                            # 修复：使用time.time()替代asyncio.get_event_loop().time()
+                            current_time = time.time()
+                            wait_time = int(reset_time) - int(current_time)
                             
-                            # 使用可中断的等待
-                            if not await self._wait_with_interrupt_check(max(wait_time, 60)):
+                            # 限制等待时间在合理范围内（1秒到1小时）
+                            wait_time = max(1, min(wait_time, 3600))
+                            
+                            # 添加更详细的日志信息
+                            reset_datetime = datetime.fromtimestamp(int(reset_time))
+                            self.logger.warning(
+                                f"API限制已达到，将等待 {wait_time} 秒后重试 "
+                                f"(重置时间: {reset_datetime.strftime('%Y-%m-%d %H:%M:%S')})"
+                            )
+                            
+                            if not await self._wait_with_interrupt_check(wait_time):
                                 raise asyncio.CancelledError("等待期间监控被停止")
                                 
                             return await self._make_request(url, params)
@@ -306,7 +317,7 @@ class GitHubStarMonitor:
                 return stargazers
 
             # 创建并发任务获取剩余页面
-            max_concurrent = min(10, 50)  # 限制并发数
+            max_concurrent = min(5, 10)  # 降低并发数以避免触发限流
             page = 2
 
             while not self.should_exit():
@@ -345,8 +356,8 @@ class GitHubStarMonitor:
                 page += max_concurrent
                 self.logger.info(f"已获取 {len(stargazers)} 个stargazers")
 
-                # 添加小延迟避免请求过于频繁，同时检查退出信号
-                if not await self._wait_with_interrupt_check(0.1):
+                # 增加请求间隔以避免触发限流
+                if not await self._wait_with_interrupt_check(0.5):
                     break
 
         except asyncio.CancelledError:
@@ -595,7 +606,6 @@ class GitHubStarMonitor:
             # 确保清理资源
             await self.cleanup()
 
-
 async def main():
     parser = argparse.ArgumentParser(description='GitHub Star 监控器（异步版本，优雅退出）')
     parser.add_argument('repo', help='仓库名称，格式: owner/repo')
@@ -644,7 +654,6 @@ async def main():
         return 1
     finally:
         print("程序退出完成")
-
 
 if __name__ == "__main__":
     try:
