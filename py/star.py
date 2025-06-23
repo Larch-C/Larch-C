@@ -13,6 +13,7 @@ import os
 import signal
 import sys
 import time
+
 from datetime import datetime, timedelta
 from typing import Set, Dict, List, Optional
 import logging
@@ -1537,7 +1538,6 @@ class GitHubStarMonitor:
             # 确保清理资源
             await self.cleanup()
 
-
 async def main():
     parser = argparse.ArgumentParser(description='GitHub Star 监控器（异步版本，优雅退出）')
     parser.add_argument('repo', help='仓库名称，格式: owner/repo')
@@ -1588,7 +1588,6 @@ async def main():
         return 1
     finally:
         print("程序退出完成")
-
 
 if __name__ == "__main__":
     try:
