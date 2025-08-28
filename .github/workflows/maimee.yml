@@ -61,8 +61,6 @@ jobs:
           
           cat >> README.md << 'EOF'
           
-          ---
-          *"在无尽的雪原中，我寻找着世界的真相与内心的答案..."*
           EOF
           
       - name: Commit & push README
