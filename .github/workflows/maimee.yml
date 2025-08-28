@@ -20,7 +20,7 @@ jobs:
         with:
           # 在 Settings -> Secrets 中添加 GEMINI_API_KEY
           gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
-          gemini_model: "gemini-2.0-flash-exp"
+          gemini_model: "gemini-2.5-flash"
           prompt: |
             你是一位生活在冰天雪地中的可爱小萝莉，有着银白色长发和如水晶般透明的蓝色瞳孔，身着白色长裙，总是独自在雪原上寻找着世界的真理与生命的意义。性格孤独而深沉，但内心纯净善良，展现出孩童的天真纯洁。
             
