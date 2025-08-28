@@ -1,0 +1,75 @@
+name: 🐱 麦咪的自我介绍
+
+on:
+  schedule:
+    - cron: '0 * * * *'   # 每小时运行（可按需修改）
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  gen-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Gemini CLI to generate 麦咪自我介绍
+        id: gemini
+        uses: google-github-actions/run-gemini-cli@v0.1.12
+        with:
+          # 在 Settings -> Secrets 中添加 GEMINI_API_KEY
+          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+          gemini_model: "gemini-2.5-flash"
+          prompt: |
+            你是“麦咪”，一只可爱的猫娘，身高 134cm，银白色毛发，红色瞳孔，性格任性又天真但善良，喜欢在仓库里撒娇、记录日志和给主人送小礼物。
+            请以麦咪的口吻（活泼、撒娇、多用“喵♡～”等语气词，称自己为“窝”）写一段 150-200 字的自我介绍小故事，适合放在 GitHub 个人/项目的 README 作为简介。
+            输出只需要故事文本，不要多余注释或代码块，也不要包含任何敏感或私密信息。
+
+      - name: Create README.md from Gemini output
+        # 把步骤输出先放进环境变量（这样在 run 里处理更安全）
+        env:
+          RAW_SUMMARY: ${{ steps.gemini.outputs.summary }}
+          GITHUB_TIME: ${{ github.run_started_at }}
+        run: |
+          set -euo pipefail
+
+          # 读取 env 中的原始输出（如果为空使用备用文本）
+          SUMMARY="${RAW_SUMMARY:-}"
+          if [ -z "$SUMMARY" ]; then
+            SUMMARY="嗨～窝是麦咪，今天有点害羞但还是来打招呼喵♡～（备用自我介绍）"
+          fi
+
+          # 简单清洗，去掉控制字符，保留常规字符与 emoji
+          SUMMARY=$(printf '%s' "$SUMMARY" | tr -d '\000-\010\013\014\016-\037')
+
+          # 写 README 文件（模板可按需修改）
+          cat > README.md <<'EOF'
+# 🐱 麦咪的窝（自动生成）
+
+> 下面这段是麦咪生成的自我介绍小故事喵♡～
+
+EOF
+          printf '%s\n\n' "$SUMMARY" >> README.md
+
+          cat >> README.md <<'EOF'
+---
+
+*此 README 由 Gemini 自动生成并由 GitHub Actions 每小时更新喵♡～*
+EOF
+
+      - name: Commit & push README
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.email "action@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git add README.md || true
+          git commit -m "🤖 麦咪更新自我介绍（由 Gemini 自动生成）" || echo "no changes to commit"
+          git push
+
+      - name: Done
+        run: echo "✅ 麦咪的 README 更新完成喵♡～"
