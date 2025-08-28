@@ -1,14 +1,14 @@
-name: 🐱 麦咪的自我介绍
+name: 🐱 麦咪的猫语加密日记
 on:
   schedule:
-    - cron: '0 * * * *'   # 每小时运行（可按需修改）
+    - cron: '0 */6 * * *'   # 每6小时运行一次
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  gen-readme:
+  gen-encrypted-readme:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -16,53 +16,283 @@ jobs:
         with:
           fetch-depth: 0
           
-      - name: Run Gemini CLI to generate
+      - name: Run Gemini CLI to generate 麦咪自我介绍
         id: gemini
         uses: google-github-actions/run-gemini-cli@v0.1.12
         with:
-          # 在 Settings -> Secrets 中添加 GEMINI_API_KEY
           gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
-          gemini_model: "gemini-2.0-flash-exp"
+          gemini_model: "gemini-2.5-flash"
           prompt: |
             你是"麦咪"，一只可爱的猫娘，身高 134cm，银白色毛发，红色瞳孔，性格任性又天真但善良，喜欢在仓库里撒娇、记录日志和给主人送小礼物。
-            请以麦咪的口吻（活泼、撒娇、多用"喵♡～"等语气词，称自己为"窝"）写一段 500-700 字的自我介绍小故事，再加入最近有什么新闻，适合放在 GitHub 个人/项目的 README 作为简介。
-            输出只需要故事文本，不要多余注释或代码块，也不要包含任何敏感或私密信息。
+            请以麦咪的口吻（活泼、撒娇、多用"喵♡～"等语气词，称自己为"窝"）写一段 500-700 字的自我介绍或今日感想或今天新闻，适合放在 GitHub 的 README 中。
+            输出只需要文本内容，不要代码块或格式标记。
             
-      - name: Create README.md from Gemini output
+      - name: Setup Python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: Cat Language Encryption
+        id: encrypt
         env:
-          RAW_SUMMARY: ${{ steps.gemini.outputs.summary }}
+          RAW_CONTENT: ${{ steps.gemini.outputs.summary }}
+          ENCRYPTION_SEED: ${{ secrets.CAT_ENCRYPTION_SEED || '114514' }}
         run: |
-          set -euo pipefail
+          python3 << 'EOF'
+          import os
+          import sys
+          import hashlib
+          import base64
+          from datetime import datetime
           
-          # 从环境变量读取（如果为空，使用备用文本）
-          SUMMARY="${RAW_SUMMARY:-}"
-          if [ -z "$SUMMARY" ]; then
-            SUMMARY="嗨～窝是麦咪，今天有点害羞但还是来打招呼喵♡～"
-          fi
+          def cat_encrypt(text, seed="114514"):
+              """
+              麦咪专用猫语加密算法
+              将文本转换为只包含 '喵', '～', '♡' 的密文
+              """
+              if not text:
+                  return "喵～♡"
+                  
+              # 使用种子生成伪随机序列
+              seed_hash = hashlib.md5(f"{seed}_{len(text)}".encode()).digest()
+              
+              # 将文本转换为字节
+              text_bytes = text.encode('utf-8')
+              
+              # 基础编码：每个字节转为3个猫语符号
+              encoded = []
+              for i, byte in enumerate(text_bytes):
+                  # 使用种子和位置信息生成随机偏移
+                  offset = (seed_hash[i % len(seed_hash)] + i) % 256
+                  encrypted_byte = byte ^ offset
+                  
+                  # 将加密字节转为3个猫语符号
+                  # 每个符号代表一个三进制位
+                  symbols = ['喵', '～', '♡']
+                  cat_code = ''
+                  for j in range(3):
+                      cat_code += symbols[(encrypted_byte >> (j*2)) & 3] if (encrypted_byte >> (j*2)) & 3 < 3 else symbols[2]
+                  encoded.append(cat_code)
+              
+              return ''.join(encoded)
           
-          # 简单清洗（去掉控制字符）
-          SUMMARY=$(printf '%s' "$SUMMARY" | tr -d '\000-\010\013\014\016-\037')
+          def cat_decrypt(cat_text, seed="114514"):
+              """
+              麦咪猫语解密算法
+              """
+              if not cat_text or len(cat_text) % 3 != 0:
+                  return "解密失败喵..."
+                  
+              seed_hash = hashlib.md5(f"{seed}_{len(cat_text)//9}".encode()).digest()
+              symbols = ['喵', '～', '♡']
+              
+              decoded_bytes = []
+              for i in range(0, len(cat_text), 3):
+                  cat_code = cat_text[i:i+3]
+                  
+                  # 解码三个符号为字节
+                  byte_val = 0
+                  for j, symbol in enumerate(cat_code):
+                      if symbol in symbols:
+                          val = symbols.index(symbol)
+                          if val == 3: val = 2  # 处理边界情况
+                          byte_val |= (val << (j*2))
+                  
+                  # 使用种子和位置解密
+                  pos = len(decoded_bytes)
+                  offset = (seed_hash[pos % len(seed_hash)] + pos) % 256
+                  original_byte = byte_val ^ offset
+                  decoded_bytes.append(original_byte)
+              
+              try:
+                  return bytes(decoded_bytes).decode('utf-8')
+              except:
+                  return "解密失败喵..."
           
-          # 将内容写入 README.md
+          # 主程序
+          content = os.environ.get('RAW_CONTENT', '麦咪今天很开心喵♡～')
+          seed = os.environ.get('ENCRYPTION_SEED', '114514')
+          
+          # 如果内容为空，使用备用内容
+          if not content.strip():
+              content = "麦咪今天有点害羞但还是要和大家打招呼喵♡～窝会继续努力记录每天的小心情哒～"
+          
+          # 加密内容
+          encrypted = cat_encrypt(content, seed)
+          
+          # 生成时间戳
+          timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC")
+          
+          # 保存到环境变量
+          print(f"ENCRYPTED_CONTENT={encrypted}")
+          print(f"ORIGINAL_LENGTH={len(content)}")
+          print(f"ENCRYPTED_LENGTH={len(encrypted)}")
+          
+          # 写入到 GITHUB_ENV
+          with open(os.environ['GITHUB_ENV'], 'a') as f:
+              f.write(f"ENCRYPTED_CONTENT={encrypted}\n")
+              f.write(f"ORIGINAL_LENGTH={len(content)}\n")
+              f.write(f"ENCRYPTED_LENGTH={len(encrypted)}\n")
+              f.write(f"GENERATION_TIME={timestamp}\n")
+          
+          # 测试解密（用于验证）
+          decrypted = cat_decrypt(encrypted, seed)
+          print(f"解密测试: {decrypted[:50]}...")
+          EOF
+          
+      - name: Create README with encrypted content
+        env:
+          ENCRYPTED_CONTENT: ${{ env.ENCRYPTED_CONTENT }}
+          ORIGINAL_LENGTH: ${{ env.ORIGINAL_LENGTH }}
+          ENCRYPTED_LENGTH: ${{ env.ENCRYPTED_LENGTH }}
+          GENERATION_TIME: ${{ env.GENERATION_TIME }}
+        run: |
           cat > README.md << 'EOF'
           # 🐱 麦咪的窝
           
+          ```
           EOF
           
-          # 把生成的内容安全追加
-          printf '%s\n\n' "$SUMMARY" >> README.md
+          echo "$ENCRYPTED_CONTENT" >> README.md
           
           cat >> README.md << 'EOF'
+          ```
           
-      - name: Commit & push README
+          ## 📊 加密信息
+          - **原文长度**: EOF
+          echo -n "$ORIGINAL_LENGTH 字符" >> README.md
+          cat >> README.md << 'EOF'
+          
+          - **密文长度**: EOF
+          echo -n "$ENCRYPTED_LENGTH 个猫语符号" >> README.md
+          cat >> README.md << 'EOF'
+          
+          - **生成时间**: EOF
+          echo -n "$GENERATION_TIME" >> README.md
+          cat >> README.md << 'EOF'
+          
+          - **压缩比**: EOF
+          if [ "$ORIGINAL_LENGTH" -gt 0 ]; then
+            RATIO=$(echo "scale=2; $ENCRYPTED_LENGTH / $ORIGINAL_LENGTH" | bc -l 2>/dev/null || echo "N/A")
+            echo -n "${RATIO}x" >> README.md
+          else
+            echo -n "N/A" >> README.md
+          fi
+          cat >> README.md << 'EOF'
+          
+          
+          ```
+          符号含义: 喵=0, ～=1, ♡=2
+          算法类型: XOR + 位移 + MD5种子
+          编码方式: UTF-8 → 字节 → 猫语三元组
+          ```
+          
+          ## 🎮 挑战
+          
+          能解密出麦咪今天说了什么吗？解密成功的话，欢迎在 Issues 里告诉麦咪哦～
+          echo "*" >> README.md
+          
+      - name: Create decryption tool
+        run: |
+          cat > decrypt_maimai.py << 'EOF'
+          #!/usr/bin/env python3
+          # -*- coding: utf-8 -*-
+          """
+          🐱 麦咪猫语解密工具 v1.0
+          
+          使用方法:
+              python decrypt_maimai.py "喵～♡喵喵～..." [种子]
+              
+          示例:
+              python decrypt_maimai.py "$(cat encrypted.txt)" "114514"
+          """
+          
+          import sys
+          import hashlib
+          
+          def cat_decrypt(cat_text, seed="114514"):
+              """麦咪猫语解密算法"""
+              if not cat_text or len(cat_text) % 3 != 0:
+                  return "❌ 解密失败喵... 密文格式不正确"
+                  
+              # 计算原始长度
+              original_length = len(cat_text) // 9
+              seed_hash = hashlib.md5(f"{seed}_{original_length}".encode()).digest()
+              symbols = ['喵', '～', '♡']
+              
+              decoded_bytes = []
+              for i in range(0, len(cat_text), 3):
+                  cat_code = cat_text[i:i+3]
+                  
+                  # 解码三个符号为字节
+                  byte_val = 0
+                  for j, symbol in enumerate(cat_code):
+                      if symbol in symbols:
+                          val = symbols.index(symbol)
+                          if val == 3: val = 2
+                          byte_val |= (val << (j*2))
+                      else:
+                          return f"❌ 发现无效符号: {symbol}"
+                  
+                  # 使用种子和位置解密
+                  pos = len(decoded_bytes)
+                  offset = (seed_hash[pos % len(seed_hash)] + pos) % 256
+                  original_byte = byte_val ^ offset
+                  decoded_bytes.append(original_byte)
+              
+              try:
+                  result = bytes(decoded_bytes).decode('utf-8')
+                  return f"✅ 解密成功！麦咪说: {result}"
+              except UnicodeDecodeError:
+                  return "❌ 解密失败喵... 可能种子不正确或密文损坏"
+          
+          if __name__ == "__main__":
+              if len(sys.argv) < 2:
+                  print(__doc__)
+                  sys.exit(1)
+                  
+              encrypted_text = sys.argv[1]
+              seed = sys.argv[2] if len(sys.argv) > 2 else "114514"
+              
+              print("🔓 麦咪猫语解密工具启动...")
+              print(f"📝 密文长度: {len(encrypted_text)} 个符号")
+              print(f"🔑 使用种子: {seed}")
+              print("=" * 50)
+              
+              result = cat_decrypt(encrypted_text, seed)
+              print(result)
+              print("=" * 50)
+              print("💝 解密工具 by 麦咪 ♡")
+          EOF
+          
+          chmod +x decrypt_maimai.py
+          
+      - name: Commit & push all files
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config user.email "action@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
-          git add README.md || true
-          git commit -m "麦咪想吃蛋糕了喵" || echo "no changes to commit"
+          git config user.email "tr@wenturc.com"
+          git config user.name "麦咪 🐱"
+          
+          git add README.md decrypt_maimai.py || true
+          
+          # 生成随机的猫语提交信息
+          COMMIT_MSGS=(
+            "🔐 麦咪更新了加密日记喵♡～"
+            "📝 今天的秘密被藏起来了喵～"
+            "🐱 麦咪的神秘猫语更新啦～"
+            "🌟 麦咪的小秘密又增加了～"
+          )
+          RANDOM_MSG=${COMMIT_MSGS[$RANDOM % ${#COMMIT_MSGS[@]}]}
+          
+          git commit -m "$RANDOM_MSG" || echo "没有新内容需要提交喵～"
           git push
           
-      - name: Done
-        run: echo "✅ 麦咪的 README 更新完成喵♡～"
+      - name: Success notification
+        run: |
+          echo "🎉 麦咪的猫语加密日记更新完成！"
+          echo "📊 统计信息:"
+          echo "   原文: ${{ env.ORIGINAL_LENGTH }} 字符"
+          echo "   密文: ${{ env.ENCRYPTED_LENGTH }} 个猫语符号"
+          echo "🔓 解密工具已生成: decrypt_maimai.py"
+          echo "💝 记得在 Secrets 中设置 CAT_ENCRYPTION_SEED 哦～"
