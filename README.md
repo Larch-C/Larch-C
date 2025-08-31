@@ -1,7 +1,7 @@
 # The Premise of Everything
 
 ### English
-Ehehe… stop following me, baka~
+Don't follow me
 
 ### 日本語 (Japanese)
 えへへ… ついてこないでよ、バカぁ〜
