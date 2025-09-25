@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/IGCrystal/IGCrystal/refs/heads/main/test/img/%E5%9C%86%E8%A7%92-1742824331489.jpg" width="40%" align="right" />
+<img src="https://raw.githubusercontent.com/IGCrystal/IGCrystal/refs/heads/main/test/img/%E5%9C%86%E8%A7%92-1742824331489.jpg" width="45%" align="right" />
 
 # 👋 Hi, I'm Larch-C
 
