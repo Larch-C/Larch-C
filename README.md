@@ -28,16 +28,27 @@
 <img src="https://img.shields.io/badge/-Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white&labelColor=3498DB" />
 <img src="https://img.shields.io/badge/-Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white&labelColor=2980B9" />
 
-## 🌱 Current Focus
-📚 Learning Python automation scripts  
-🛠️ Building a smart home dashboard  
-🌐 Experimenting with web scraping  
+<div align="center">
+<table>
+<tr>
+<td><h2>🌱 Current Focus</h2></td>
+<td><h2>📫 Let's Connect</h2></td>
+</tr>
+<tr>
+<td>
+📚 Learning Python automation scripts<br>
+🛠️ Building a smart home dashboard<br>
+🌐 Experimenting with web scraping<br>
 🤝 Contributing to beginner-friendly OSS
-
-## 📫 Let's Connect
+</td>
+<td>
 <a href="https://twitter.com/cedar2352">
 <img src="https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white&labelColor=1DA1F2" />
 </a>
 <a href="https://wenturc.com">
 <img src="https://img.shields.io/badge/Blog-FF5722?style=for-the-badge&logo=medium&logoColor=white&labelColor=FF5722" />
 </a>
+</td>
+</tr>
+</table>
+</div>
