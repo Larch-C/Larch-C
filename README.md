@@ -2,8 +2,6 @@
 
 # 👋 Hi, I'm Larch-C
 
-<img src="https://readme-typing-svg.demolab.com?font=Quicksand&weight=500&size=22&pause=1200&color=3498DB&width=520&lines=Tech+Enthusiast;Creative+Coder;Lifelong+Learner;Multidisciplinary+Maker" width="40%" align="left" />
-
 [![GitHub followers](https://img.shields.io/github/followers/Larch-C?style=for-the-badge&logo=github&logoColor=white&color=3498DB&labelColor=2C3E50)](https://github.com/Larch-C)
 
 ## 🛠️ Technical Arsenal
@@ -13,9 +11,13 @@
 <br>
 <br>
 
+<img src="https://readme-typing-svg.demolab.com?font=Quicksand&weight=500&size=22&pause=1200&color=3498DB&width=520&lines=Tech+Enthusiast;Creative+Coder;Lifelong+Learner;Multidisciplinary+Maker" width="70%" align="left" />
+
 <img src="https://github-readme-stats.vercel.app/api?username=Larch-C&show_icons=true&theme=tokyonight&hide_border=true&bg_color=0D1117&title_color=3498DB&icon_color=E74C3C&text_color=FFFFFF&border_radius=15" align="right" width="50%" />
 
 <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Larch-C&layout=compact&theme=tokyonight&hide_border=true&bg_color=0D1117&title_color=3498DB&text_color=FFFFFF&border_radius=15" align="right" width="50%" />
+
+<br>
 
 <img src="https://img.shields.io/badge/-JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black&labelColor=F39C12" />
 <img src="https://img.shields.io/badge/-TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white&labelColor=2980B9" />
