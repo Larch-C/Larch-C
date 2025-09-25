@@ -31,8 +31,8 @@
 <div align="center">
 <table>
 <tr>
-<td><h2>🌱 Current Focus</h2></td>
-<td><h2>📫 Let's Connect</h2></td>
+<td><h3>🌱 Current Focus</h3></td>
+<td><h3>📫 Let's Connect</h3></td>
 </tr>
 <tr>
 <td>
