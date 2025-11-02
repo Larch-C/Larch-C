@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/IGCyukira/IGCyukira/refs/heads/main/img/IGCrystal_NOBG_Edit.png" width = "305" height = "411" alt="IGCyukira" align=right />
+<img src="https://raw.githubusercontent.com/IGCyukira/IGCyukira/refs/heads/main/img/IGCrystal_NOBG_Edit.webp" width = "305" height = "411" alt="IGCyukira" align=right />
 <div align="center">
 
 # [IGCrystal](https://github.com/IGCrystal) — The Memory of Snow
